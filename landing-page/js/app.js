@@ -17,7 +17,7 @@
  * Define Global Variables
  * 
 */
-const nav = document.querySelectorAll('#navbar__list')
+const navUl = document.getElementById('navbar__list')
 const sections = document.querySelectorAll('section')
 
 /**
@@ -26,7 +26,18 @@ const sections = document.querySelectorAll('section')
  * 
 */
 
+//Returns true if class is in viewport
+const isInViewport = (element) => {
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    )
+}
 
+//
 
 /**
  * End Helper Functions
@@ -36,11 +47,33 @@ const sections = document.querySelectorAll('section')
 
 // build the nav
 
-for (const navSection of navSections) {
-
+const addNavElement = () => {
+    for (const section of sections) {
+        const navLi = document.createElement('li')
+        navLi.innerHTML = `<a class="nav__link" id="nav-${section.id}" href="#${section.id}">${section.dataset.nav}</a>`
+        navUl.appendChild(navLi)
+    }
+    console.log('addNavElement yup')
 }
+addNavElement()
+
+navUl.addEventListener('click', scrollToSection = () => {
+    document.querySelectorAll('.nav__link').forEach(a => {
+        document.querySelector('section').scrollIntoView({behavior: 'smooth'})
+    })
+})
+
 
 // Add class 'active' to section when near top of viewport
+const addActiveClass = () => {
+    for (const section of sections) {
+        if (isInViewport(section)) {
+            section.classList.add('active-section')
+        } else {
+            section.classList.remove('active-section')
+        }
+    }
+}
 
 
 // Scroll to anchor ID using scrollTO event
@@ -57,5 +90,9 @@ for (const navSection of navSections) {
 // Scroll to section on link click
 
 // Set sections as active
+document.addEventListener('scroll', function() {
+    addActiveClass();
+})
+
 
 
