@@ -57,11 +57,12 @@ const addNavElement = () => {
 }
 addNavElement()
 
-navUl.addEventListener('click', scrollToSection = () => {
-    document.querySelectorAll('.nav__link').forEach(a => {
-        document.querySelector('section').scrollIntoView({behavior: 'smooth'})
+const scrollToSection = (e) => {
+        e.preventDefault()
+        document.querySelectorAll('.nav__link').forEach(a => {
+            document.querySelector('section').scrollIntoView({behavior: 'smooth'})
     })
-})
+}
 
 
 // Add class 'active' to section when near top of viewport
@@ -75,6 +76,17 @@ const addActiveClass = () => {
     }
 }
 
+//Hide NavBar when user stops scrolling
+const hideNavBar = () => {
+    const navBar = document.querySelector('nav');
+    var timer;
+    window.addEventListener('scroll', () => {
+        window.clearTimeout(timer)
+        navBar.style.display = 'block';
+        timer = setTimeout(() => navBar.style.display= 'none' ,2000)
+    }, false)
+}
+hideNavBar()
 
 // Scroll to anchor ID using scrollTO event
 
@@ -88,11 +100,13 @@ const addActiveClass = () => {
 // Build menu 
 
 // Scroll to section on link click
-
+navUl.addEventListener('click', scrollToSection(e))
 // Set sections as active
 document.addEventListener('scroll', function() {
     addActiveClass();
 })
+document.addEventListener('scroll', hideNavBar())
+
 
 
 
