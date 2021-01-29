@@ -17,8 +17,9 @@
  * Define Global Variables
  * 
 */
-const navUl = document.getElementById('navbar__list')
-const sections = document.querySelectorAll('section')
+const navUl = document.getElementById('navbar__list');
+const sections = document.querySelectorAll('section');
+const button = document.getElementById('btn');
 
 /**
  * End Global Variables
@@ -37,33 +38,35 @@ const isInViewport = (element) => {
     )
 }
 
-//
-
 /**
  * End Helper Functions
  * Begin Main Functions
  * 
 */
 
-// build the nav
+// Add a nav element to the navbar for each section
 
 const addNavElement = () => {
     for (const section of sections) {
         const navLi = document.createElement('li')
-        navLi.innerHTML = `<a class="nav__link" id="nav-${section.id}" href="#${section.id}">${section.dataset.nav}</a>`
+        navLi.innerHTML = `<a class="nav__link" id="nav-${section.id}">${section.dataset.nav}</a>`
         navUl.appendChild(navLi)
     }
-    console.log('addNavElement yup')
 }
 addNavElement()
 
-const scrollToSection = (e) => {
-        e.preventDefault()
+// Scroll smoothly to a section when clicked in nav bar
+const scrollToSection = () => {
         document.querySelectorAll('.nav__link').forEach(a => {
-            document.querySelector('section').scrollIntoView({behavior: 'smooth'})
+            a.addEventListener('click', () => {
+                sections.forEach(section => {
+                    if(a.textContent === section.dataset.nav) {
+                        section.scrollIntoView({behavior: 'smooth'})
+                    }
+                })
+            })
     })
 }
-
 
 // Add class 'active' to section when near top of viewport
 const addActiveClass = () => {
@@ -88,7 +91,23 @@ const hideNavBar = () => {
 }
 hideNavBar()
 
-// Scroll to anchor ID using scrollTO event
+//Scroll to top button functionality
+const scrollToTop = () => {
+    button.addEventListener('click', () => {
+        document.documentElement.scrollTop=0;
+        document.body.scrollTop=0;
+    })
+}
+scrollToTop()
+
+//Only show scroll button when user scrolls below fold of page
+const buttonVisible = () => {
+    if(document.documentElement.scrollTop>100 || document.body.scrollTop>100) {
+        button.style.display = 'block';
+    } else {
+        button.style.display = 'none';
+    }
+}
 
 
 /**
@@ -97,15 +116,18 @@ hideNavBar()
  * 
 */
 
-// Build menu 
-
 // Scroll to section on link click
-navUl.addEventListener('click', scrollToSection(e))
+navUl.addEventListener('click', scrollToSection())
 // Set sections as active
 document.addEventListener('scroll', function() {
     addActiveClass();
 })
-document.addEventListener('scroll', hideNavBar())
+// Hide the nav bar when user stops scrolling
+// Make scroll-to-top button visible when user scrolls below fold og page
+document.addEventListener('scroll', () => {
+   hideNavBar();
+   buttonVisible();
+})
 
 
 
